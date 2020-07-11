@@ -1,0 +1,255 @@
+﻿<div class="portlet box blue">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="fa fa-plus"></i> <?php echo $lang_var_admin_23 . " " . $ws_title_var; ?>
+        </div>
+        <div class="tools">
+            <a href="?wm_section=<?php echo $wm_section; ?>" class="close"></a>
+
+        </div>
+    </div>
+    <div class="portlet-body form">
+        <!-- BEGIN FORM-->
+        <form action="?wm_section=<?php echo $wm_section; ?>&act=insert" method="post" class="form-horizontal"
+              enctype="multipart/form-data">
+            <div class="form-body">
+
+                <?php if ($ws_sections_st != 0) { ?>
+                    <div class="form-group">
+                        <label class="control-label col-md-2"><?php echo $lang_var_admin_99; ?> <span
+                                class="required">*</span></label>
+
+                        <div class="col-md-10">
+                            <select class="form-control" name="cat_id" class="select2me" required>
+                                <option value=""><?php echo $lang_var_admin_100; ?>...</option>
+                                <?php
+                                $sql_father_retrive = mysql_query("SELECT * FROM " . $prefix . "_sections where wm_section_id='$wm_section' and father_id='0' order by row_no, section_id");
+                                while ($data_father_retrive = mysql_fetch_array($sql_father_retrive)) {
+                                    if ($lang == "ar") {
+                                        $section_title = $data_father_retrive['section_title_ar'];
+                                    } else {
+                                        $section_title = $data_father_retrive['section_title_en'];
+                                    }
+                                    $sql_subsection_retrive = mysql_query("SELECT * FROM " . $prefix . "_sections where wm_section_id='$wm_section' and father_id='$data_father_retrive[section_id]' order by row_no, section_id");
+                                    $subsection_count = mysql_num_rows($sql_subsection_retrive);
+                                    $disabld_sec = "";
+                                    if ($subsection_count > 0) {
+                                        $disabld_sec = "disabled";
+                                    }
+                                    ?>
+                                    <option <?php echo $disabld_sec; ?>
+                                        value="<?php echo $data_father_retrive['section_id']; ?>"><?php echo $section_title; ?></option>
+                                    <?php
+                                    while ($data_subsection_retrive = mysql_fetch_array($sql_subsection_retrive)) {
+                                        if ($lang == "ar") {
+                                            $section_title = $data_subsection_retrive['section_title_ar'];
+                                        } else {
+                                            $section_title = $data_subsection_retrive['section_title_en'];
+                                        }
+                                        ?>
+                                        <option value="<?php echo $data_subsection_retrive['section_id']; ?>"> &nbsp;
+                                            &nbsp; - <?php echo $section_title; ?></option>
+                                        <?php
+                                    }
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                <?php } ?>
+
+                <?php if ($wm_section == 2) { ?>
+                    <div class="form-group">
+					<?php /*/?>
+                        <label class="control-label col-md-2"><?php echo $lang_var_admin_510; ?> <span
+                                class="required">*</span></label>
+
+                        <div class="col-md-10">
+						
+                            <select class="form-control" name="cat2_id" class="select2me" required>
+                                <option value=""><?php echo $lang_var_admin_511; ?>...</option>
+                                <?php
+                                $sql_father_retrive = mysql_query("SELECT * FROM " . $prefix . "_places order by row_no, place_id");
+                                while ($data_father_retrive = mysql_fetch_array($sql_father_retrive)) {
+                                    if ($lang == "ar") {
+                                        $section_title = $data_father_retrive['place_title_ar'];
+                                    } else {
+                                        $section_title = $data_father_retrive['place_title_en'];
+                                    }
+                                    ?>
+                                    <option
+                                        value="<?php echo $data_father_retrive['place_id']; ?>"><?php echo $section_title; ?></option>
+                                    <?php
+                                }
+                                ?>
+                            </select>
+							
+                        </div>
+						<?php /*/?>
+                    </div>
+                <?php } ?>
+
+                <?php
+                if ($ws_date_status == 1) {
+                    ?>
+                    <div class="form-group">
+                        <label class="control-label col-md-2"><?php echo $lang_var_admin_101; ?> <span class="required">*</span></label>
+
+                        <div class="col-md-10">
+                            <div class="input-group date date-picker" data-date-format="yyyy-mm-dd">
+                                <input type="text" class="form-control" value="<?php echo $pd_current_date; ?>"
+                                       name="topic_date" readonly>
+				<span class="input-group-btn">
+				<button class="btn default" type="button"><i class="fa fa-calendar"></i></button>
+				</span>
+                            </div>
+                        </div>
+                    </div>
+                    <?php
+                }
+                ?>
+                <?php if ($site_ar_box_status != 0) { ?>
+                    <div class="form-group">
+                        <label
+                            class="control-label col-md-2"><?php echo $lang_var_admin_102; ?>  <?php echo $ar_lang_icon; ?>
+                            <span class="required">*</span></label>
+
+                        <div class="col-md-10">
+                            <input type="text" name="topic_title_ar" dir="rtl" class="form-control" required=""/>
+                        </div>
+                    </div>
+
+                    <?php
+                    if ($ws_longtext_status == 1) {
+                        $ws_editor_cls = "";
+                        $ws_editor_rws = 5;
+                        if ($ws_editor_status == 1) {
+                            $ws_editor_cls = "tinymce_rtl";
+                            $ws_editor_rws = 15;
+                        }
+                        ?>
+                        <div class="form-group">
+                            <label
+                                class="control-label col-md-2"><?php echo $lang_var_admin_103; ?>  <?php echo $ar_lang_icon; ?>
+                                <span class="required">*</span></label>
+
+                            <div class="col-md-10" dir="ltr">
+                                <textarea name="topic_details_ar" dir="rtl" rows="<?php echo $ws_editor_rws; ?>"
+                                          class="form-control <?php echo $ws_editor_cls; ?>"></textarea>
+                            </div>
+                        </div>
+                        <?php
+                    }
+                    ?>
+                    <?php
+                }
+                ?>
+                <?php if ($site_en_box_status != 0) { ?>
+                    <div class="form-group">
+                        <label
+                            class="control-label col-md-2"><?php echo $lang_var_admin_102; ?>  <?php echo $en_lang_icon; ?>
+                            <span class="required">*</span></label>
+
+                        <div class="col-md-10">
+                            <input type="text" name="topic_title_en" dir="ltr" class="form-control" required=""/>
+                        </div>
+                    </div>
+                    <?php
+                    if ($ws_longtext_status == 1) {
+                        $ws_editor_cls = "";
+                        $ws_editor_rws = 5;
+                        if ($ws_editor_status == 1) {
+                            $ws_editor_cls = "tinymce_ltr";
+                            $ws_editor_rws = 15;
+                        }
+                        ?>
+                        <div class="form-group">
+                            <label
+                                class="control-label col-md-2"><?php echo $lang_var_admin_103; ?>  <?php echo $en_lang_icon; ?>
+                                <span class="required">*</span></label>
+
+                            <div class="col-md-10" dir="ltr">
+                                <textarea name="topic_details_en" dir="ltr" rows="<?php echo $ws_editor_rws; ?>"
+                                          class="form-control <?php echo $ws_editor_cls; ?>"></textarea>
+                            </div>
+                        </div>
+                        <?php
+                    }
+                    ?>
+                    <?php
+                }
+                ?>
+
+                <?php
+                for ($ii = 1; $ii <= 6; $ii++) {
+                    $ws_extra_is = "ws_extra$ii" . "_title_var";
+                    $ws_extra_is = $$ws_extra_is;
+                    if ($ws_extra_is != "" && $ws_extra_is != "0" && $ws_extra_is != " ") { ?>
+                        <div class="form-group">
+                            <label class="control-label col-md-2"><?php echo @$$ws_extra_is; ?> </label>
+
+                            <div class="col-md-10">
+                                <input type="text" name="ws_extra<?php echo $ii; ?>_title" class="form-control"/>
+                            </div>
+                        </div>
+                    <?php }
+                } ?>
+
+                <?php
+                $imgreq = "";
+                if ($ws_type == 1) {
+                    $imgreq = "required";
+                }
+                ?>
+                <div class="form-group">
+                    <label class="control-label col-md-2"><?php echo $lang_var_admin_104; ?> </label>
+
+                    <div class="col-md-10">
+                        <input type="file" name="myfile" class="form-control" <?php echo $imgreq; ?>/>
+                        <span class="help-block">e.g: .png, .jpeg, .jpg, .gif</span>
+
+                    </div>
+                </div>
+
+                <?php
+                if ($ws_attachfile_status == 1) {
+                    ?>
+                    <div class="form-group">
+                        <label class="control-label col-md-2"><?php echo $lang_var_admin_105; ?> </label>
+
+                        <div class="col-md-10">
+                            <div class="input-group input-medium">
+                                <input name="topic_attach_file" readonly type="text" id="url" dir="ltr" value=""
+                                       class="form-control input-medium">
+                
+				<span class="input-group-btn">
+					<a href="javascript:;"
+                       onclick="moxman.browse({fields: 'url', extensions:'jpg,gif,png', no_host: true});"
+                       class="btn default"><?php echo $lang_var_admin_206; ?></a>
+				</span>
+                <span class="input-group-btn">
+                <a href="javascript:;" onclick="document.getElementById('url').value=''" class="btn default">&nbsp;<i
+                        class="fa fa-times"></i>&nbsp;</a>
+                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <?php
+                }
+                ?>
+
+            </div>
+            <div class="form-actions fluid">
+                <div class="col-md-offset-2 col-md-10">
+                    <button type="submit" class="btn green"><?php echo $lang_var_admin_23; ?></button>
+                    &nbsp;
+                    <a href="?wm_section=<?php echo $wm_section; ?>">
+                        <button type="button" class="btn default"><?php echo $lang_var_admin_22; ?></button>
+                    </a>
+                </div>
+            </div>
+        </form>
+        <!-- END FORM-->
+    </div>
+    <!-- END VALIDATION STATES-->
+</div>
